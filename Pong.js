@@ -114,6 +114,3 @@ function marcaPonto(){
     pontosDoOponente += 1;
   }
 }
-
-
-
