@@ -13,7 +13,8 @@ let yRacket = 150;
 
 let xRacketOpponent = 585;
 let yRacketOpponent = 150;
-let speedYOpponent;
+let speedYOpponent = 6;
+let directionOpponent = 1; 
 
 let collision = false;
 
@@ -22,6 +23,7 @@ let pointsOpponent = 0;
 
 function setup() {
   createCanvas(600, 400);
+  //createCanvas(1000, 600);
 }
 
 function draw() {
@@ -29,10 +31,11 @@ function draw() {
   showBall();
   moveBall();
   checkEdgeCollision();
-  showsRacket(xRacket, yRacket);
+  showRacket(xRacket, yRacket);
   moveMyRacket();
   checkCollisionRacket(xRacket, yRacket);
-  showsRacket(xRacketOpponent, yRacketOpponent);
+  showRacket(xRacket, yRacket);
+  showRacket(xRacketOpponent, yRacketOpponent);
   moveOpponentRacket();
   checkCollisionRacket(xRacketOpponent, yRacketOpponent);
   includeScoreboard();
@@ -57,29 +60,45 @@ function checkEdgeCollision() {
   }
 }
 
-function showsRacket(x, y) {
+function showRacket(x, y) {
   rect(x, y, racketLength, racketHeight);
 }
 
 function moveMyRacket() {
-  if (keyIsDown(UP_ARROW)) {
+  if (keyIsDown(UP_ARROW) && yRacket > 0) { 
     yRacket -= 10;
   }
-  if (keyIsDown(DOWN_ARROW)) {
+  if (keyIsDown(DOWN_ARROW) && yRacket < 400 - racketHeight) { 
     yRacket += 10;
   }
 }
 
-function checkCollisionRacket(x, y) {
-  collision = collisionBallCircleRacket(x, y, racketLength, racketHeight, xBall, yBall, ray);
-  if (collision) {
-    speedXBall *= -1;
-  }
+function collisionBallCircleRacket(xRacket, yRacket, racketWidth, racketHeight, xBall, yBall, ray) {
+  return xBall - ray < xRacket + racketWidth &&
+         yBall - ray < yRacket + racketHeight &&
+         yBall + ray > yRacket;
 }
 
+function checkCollisionRacket(x, y) {
+  if (xBall - ray <= x + racketLength && 
+      xBall + ray >= x &&
+      yBall + ray >= y &&
+      yBall - ray <= y + racketHeight) {
+    speedXBall *= -1; 
+  }
+}
+// function checkCollisionRacket(x, y) {
+//   collision = collisionBallCircleRacket(x, y, racketLength, racketHeight, xBall, yBall, ray);
+//   if (collision) {
+//     speedXBall *= -1;
+//   }
+
 function moveOpponentRacket() {
-  speedYOpponent = yBall - yRacketOpponent - racketLength / 2 - 30;
-  yRacketOpponent += speedYOpponent;
+  yRacketOpponent += speedYOpponent * directionOpponent;
+
+  if (yRacketOpponent <= 0 || yRacketOpponent + racketHeight >= height) {
+    directionOpponent *= -1; 
+  }
 }
 
 function includeScoreboard() {
