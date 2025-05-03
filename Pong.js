@@ -1,29 +1,24 @@
-//variáveis da bolinha
-let xBolinha = 300;
-let yBolinha = 200;
-let diametro = 15;
-let raio = diametro / 2 ;
+let xBall = 300;
+let yBall = 200;
+let diameter = 15;
+let ray = diameter / 2;
 
-//velocidade da bolinha
-let velocidadeXBolinha = 6;
-let velocidadeYBolinha = 6;
-let raqueteComprimento = 10;
-let raqueteAltura = 90;
+let speedXBall = 6;
+let speedYBall = 6;
+let racketLength = 10;
+let racketHeight = 90;
 
-//variáveis da raquete
-let xRaquete = 5;
-let yRaquete = 150;
+let xRacket = 5;
+let yRacket = 150;
 
-//variáveis do oponente
-let xRaqueteOponente = 585;
-let yRaqueteOponente = 150;
-let velocidadeYOponente;
+let xRacketOpponent = 585;
+let yRacketOpponent = 150;
+let speedYOpponent;
 
-let colidiu = false;
+let collision = false;
 
-//placar do jogo
-let meusPontos = 0;
-let pontosDoOponente = 0;
+let myPoints = 0;
+let pointsOpponent = 0;
 
 function setup() {
   createCanvas(600, 400);
@@ -31,86 +26,73 @@ function setup() {
 
 function draw() {
   background(0);
-  mostraBolinha();
-  movimentaBolinha();
-  verificaColisaoBorda();
-  mostraRaquete(xRaquete, yRaquete);
-  movimentaMinhaRaquete();
-  PPverificaColisaoRaquete();
-  verificaColisaoRaquete(xRaquete, yRaquete);
-  mostraRaquete(xRaqueteOponente, yRaqueteOponente);
-  movimentaRaqueteOponente();
-  verificaColisaoRaquete(xRaqueteOponente, yRaqueteOponente);
-  incluiPlacar();
-  marcaPonto();
+  showBall();
+  moveBall();
+  checkEdgeCollision();
+  showsRacket(xRacket, yRacket);
+  moveMyRacket();
+  checkCollisionRacket(xRacket, yRacket);
+  showsRacket(xRacketOpponent, yRacketOpponent);
+  moveOpponentRacket();
+  checkCollisionRacket(xRacketOpponent, yRacketOpponent);
+  includeScoreboard();
+  scorePoints();
 }
 
-function mostraBolinha(){
-  circle(xBolinha, yBolinha, diametro);
+function showBall() {
+  circle(xBall, yBall, diameter);
 }
 
-function movimentaBolinha(){
-  xBolinha += velocidadeXBolinha;
-  yBolinha += velocidadeYBolinha;
+function moveBall() {
+  xBall += speedXBall;
+  yBall += speedYBall;
 }
 
-function verificaColisaoBorda(){
-  if (xBolinha + raio> width ||
-     xBolinha - raio< 0){
-    velocidadeXBolinha *= -1;
+function checkEdgeCollision() {
+  if (xBall + ray > width || xBall - ray < 0) {
+    speedXBall *= -1;
   }
-  if (yBolinha + raio> height ||
-     yBolinha - raio < 0){
-    velocidadeYBolinha *= -1;
+  if (yBall + ray > height || yBall - ray < 0) {
+    speedYBall *= -1;
   }
 }
 
-function mostraRaquete(x,y){
-  rect(x, y, raqueteComprimento, 
-      raqueteAltura);
+function showsRacket(x, y) {
+  rect(x, y, racketLength, racketHeight);
 }
 
-function movimentaMinhaRaquete(){
-  if (keyIsDown(UP_ARROW)){
-    yRaquete -= 10;
+function moveMyRacket() {
+  if (keyIsDown(UP_ARROW)) {
+    yRacket -= 10;
   }
-  if (keyIsDown(DOWN_ARROW)){
-    yRaquete += 10;
-  }
-}
-
-function verificaColisaoRaquete(){
-  if (xBolinha - raio < xRaquete + raqueteComprimento && 
-      yBolinha - raio < yRaquete + raqueteAltura && 
-      yBolinha + raio > yRaquete){
-    velocidadeXBolinha *= -1;
+  if (keyIsDown(DOWN_ARROW)) {
+    yRacket += 10;
   }
 }
 
-function verificaColisaoRaquete(x, y){
-  colidiu = collideRectCircle(x, y,raqueteComprimento,raqueteAltura,
-                              xBolinha,yBolinha,raio);
-  if (colidiu){
-    velocidadeXBolinha *= -1;
+function checkCollisionRacket(x, y) {
+  collision = collisionBallCircleRacket(x, y, racketLength, racketHeight, xBall, yBall, ray);
+  if (collision) {
+    speedXBall *= -1;
   }
 }
 
-function movimentaRaqueteOponente(){
-  velocidadeYOponente = yBolinha - yRaqueteOponente - raqueteComprimento / 2 - 30;
-  yRaqueteOponente += velocidadeYOponente
+function moveOpponentRacket() {
+  speedYOpponent = yBall - yRacketOpponent - racketLength / 2 - 30;
+  yRacketOpponent += speedYOpponent;
 }
 
-function incluiPlacar(){
+function includeScoreboard() {
   fill(255);
-  text(meusPontos, 278, 26);
-  text(pontosDoOponente, 321, 26)
+  text(myPoints, 278, 26);
+  text(pointsOpponent, 321, 26);
 }
 
-function marcaPonto(){
-  if (xBolinha > 590){
-    meusPontos += 1;
+function scorePoints() {
+  if (xBall > 590) {
+    myPoints += 1;
   }
-  if (xBolinha < 10){
-    pontosDoOponente += 1;
+  if (xBall < 10) {
+    pointsOpponent += 1;
   }
 }
